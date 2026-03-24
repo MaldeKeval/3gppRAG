@@ -3,11 +3,11 @@
 from __future__ import annotations
 
 import shutil
-import chromadb
 import httpx
 from datasets import load_dataset
 from tqdm import tqdm
 
+from rag.chroma_client import persistent_chroma_client
 from rag.config import Settings, load_settings
 from rag.ollama_api import embed_text
 
@@ -44,7 +44,7 @@ def build_index(
     if chroma_path.exists():
         shutil.rmtree(chroma_path)
 
-    client_chroma = chromadb.PersistentClient(path=str(chroma_path))
+    client_chroma = persistent_chroma_client(chroma_path)
     collection = client_chroma.create_collection(
         name=settings.collection_name,
         metadata={

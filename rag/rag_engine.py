@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-import chromadb
 import httpx
 
+from rag.chroma_client import persistent_chroma_client
 from rag.config import Settings
 from rag.ollama_api import chat_stream, embed_text
 
@@ -39,7 +39,7 @@ def load_collection(settings: Settings):
             f"Chroma data not found at {settings.chroma_path}. "
             "Run with --rebuild-index first."
         )
-    client = chromadb.PersistentClient(path=str(settings.chroma_path))
+    client = persistent_chroma_client(settings.chroma_path)
     col = client.get_collection(name=settings.collection_name)
     meta = col.metadata or {}
     stored = meta.get("embed_model")
